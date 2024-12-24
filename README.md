@@ -51,7 +51,7 @@ flowchart TD
 </p>
   ### Bucket
 <p align="center">
-<img src="docs/bolacha-s3" alt="Telegram message with S3 URL presigned" width="300">
+<img src="docs/bolacha-s3.jpeg" alt="Telegram message with S3 URL presigned" width="300">
 </p>  
 <p align="center">
 <img src="docs/bucket.jpeg" alt="View of bucket using S3 Files (IOS)" width="300">
