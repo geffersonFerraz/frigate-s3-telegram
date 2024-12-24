@@ -38,3 +38,12 @@ flowchart TD
 
 ```
 
+<details>
+  <summary>Screenshots</summary>
+  
+  ### Telegram
+  
+
+  ### Bucket
+  
+</details>
