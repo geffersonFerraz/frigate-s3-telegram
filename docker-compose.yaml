@@ -1,0 +1,82 @@
+version: '3'
+networks:
+  app-network:
+    driver: bridge
+
+services:
+  frigate:
+    image: ghcr.io/blakeblackshear/frigate:stable
+    container_name: frigate
+    networks:
+      - app-network
+    restart: unless-stopped
+    shm_size: 200m
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    volumes:
+      - /frigate/storage:/media/frigate
+      - /frigate/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - type: tmpfs
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
+    environment:
+      - FRIGATE_RTSP_PASSWORD=mypassword
+    ports:
+      - 8971:8971
+      - 5000:5000
+      - 8554:8554
+      - 8555:8555/tcp
+      - 8555:8555/udp
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    networks:
+      - app-network
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+  redis:
+    image: redis:7.2.3-alpine3.18
+    networks:
+      - app-network
+    restart: always
+    command:
+      - 'redis-server'
+      - '--save 900 1'
+      - '--save 300 10'
+      - '--save 60 100'
+    volumes:
+      - /mnt/docker/redis/data:/data
+
+  frigate-telegram:
+    image: geffws/frigate-telegram:v1.0.1
+    restart: always
+    networks:
+      - app-network
+    environment:
+      BUCKET_SERVER: "br-ne1.magaluobjects.com"
+      BUCKET_NAME: "your-bucket"
+      KEY_PAIR_ID: "change-me"
+      KEY_PAIR_SECRET: "me-too"
+      TELEGRAM_BOT_TOKEN: "alohomora"
+      FRIGATE_URL: "http://frigate:5000"
+      TELEGRAM_ERROR_CHAT_ID:  "chat-to-send-error"
+      FRIGATE_EVENT_LIMIT: "50"
+      TELEGRAM_CHAT_ID:  "chat-to-send-events"
+      REDIS_ADDR:  "redis:6379"
+      RABBIT_URL:  "amqp://guest:guest@rabbitmq:5672/"
+    volumes:
+      - type: tmpfs # Optional
+        target: /home/ubuntu/tmptelegram
+        tmpfs:
+          size: 10000000
+
