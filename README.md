@@ -1,5 +1,7 @@
 # Frigate-S3-Telegram
 
+Archived: see new my new version at https://github.com/geffersonFerraz/frigate-events-telegram
+
 Frigate-S3-Telegram is a Go-based application that integrates Frigate, S3, and Telegram to manage and notify about security events. The application fetches events from Frigate, processes them, and sends notifications to a Telegram bot. It also stores event data in an S3 bucket and uses RabbitMQ for message queuing.
 
 ## Features
